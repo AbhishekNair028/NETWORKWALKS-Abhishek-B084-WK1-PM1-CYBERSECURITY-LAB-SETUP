@@ -1,229 +1,299 @@
-# NETWORKWALKS-Abhishek-Sajeev-Nair-WK1-PM1-CYBERSECURITY-LAB-SETUP
+# Week 02 – Reconnaissance and Network Scanning
 
-# Cybersecurity Lab Setup Using VirtualBox and Kali Linux
+**Cybersecurity Internship | NETWORKWALKS**
+**Author:** Abhishek Nair
 
-**Author:** Abhishek Sajeev Nair  
-**Program:** NETWORKWALKS Cybersecurity Internship  
-**Week:** 1 (WK1-PM1)  
-**Project:** Cybersecurity Lab Environment Setup
+This repository documents my Week 02 practical work: footprinting the assigned domain using Kali Linux tools and performing authorised network discovery with Zenmap.
+
+## Table of Contents
+
+- [Objectives](#objectives)
+- [Lab Environment](#lab-environment)
+- [Authorisation and Scope](#authorisation-and-scope)
+- [Practical 1 – Footprinting and Reconnaissance (W2-PM1)](#practical-1--footprinting-and-reconnaissance-w2-pm1)
+- [Practical 2 – Network Scanning with Zenmap (W2-PM5)](#practical-2--network-scanning-with-zenmap-w2-pm5)
+- [Summary of Findings](#summary-of-findings)
+- [Key Learning Outcomes](#key-learning-outcomes)
+- [Conclusion](#conclusion)
+- [Project Details](#project-details)
+
+## Objectives
+
+- Collect publicly available information about the assigned domain.
+- Identify website technologies and inspect HTTP response information.
+- Explore DNS records and domain infrastructure.
+- Check for detectable Web Application Firewall protection.
+- Practise authorised network discovery with Zenmap.
+- Document methodology, observations, and evidence.
+
+## Lab Environment
+
+| Parameter | Details |
+|---|---|
+| Operating System | Kali Linux (VirtualBox VM) |
+| Host OS | Windows |
+| Virtualization | Oracle VirtualBox |
+| Footprinting Tools | WHOIS, WhatWeb, Nslookup, cURL, Wafw00f, DNSenum |
+| Network Scanner | Zenmap / Nmap |
+| Target Domain | `networkwalks.com` |
+| Network Interface | `eth0` |
+| Kali IPv4 | `10.0.0.2/24` |
+| NAT Network | `NATNetwork` |
+| Subnet | `10.0.0.0/24` |
+| Gateway | `10.0.0.1` |
+
+## Authorisation and Scope
+
+Footprinting is focused on the internship-assigned domain `networkwalks.com` and publicly available information. Network scanning is limited to an authorised lab or network scope. No exploitation or unauthorised access is performed.
 
 ---
 
-## 1. Project Overview
+# Practical 1 – Footprinting and Reconnaissance (W2-PM1)
 
-As part of the first week of my cybersecurity internship at NETWORKWALKS, I worked on building a virtual cybersecurity lab using Oracle VirtualBox and Kali Linux.
+## Objective
 
-The purpose of this setup was to create a virtual environment where I could understand networking, configure virtual machines, and prepare for future authorized penetration-testing activities.
+To collect publicly available domain and website information using six Kali Linux tools.
 
-The Kali Linux virtual machine runs on a Windows host system and is connected through a custom NAT Network named `NATNetwork`.
+## Tools Used
 
-This documentation covers the tools used, configuration process, network setup, testing, and important things learned during the project.
+1. WHOIS
+2. WhatWeb
+3. Nslookup
+4. cURL
+5. Wafw00f
+6. DNSenum
 
-## 2. Project Task Checklist
+## 1. WHOIS – Domain Registration Lookup
 
-| Task | Status | Evidence |
-|---|---|---|
-| Install VirtualBox | Completed | Screenshots 01, 02 |
-| Download and configure Kali Linux | Completed | Screenshots 03, 04 |
-| Create NAT Network | Completed | Screenshot 05 |
-| Connect Kali Linux to NATNetwork | Completed | Screenshots 06, 07 |
-| Verify internet connectivity | Completed | Screenshot 09 |
-| Configure Kali IP as 10.0.0.2/24 | Pending verification | Section 7 |
-| Enable clipboard and drag-and-drop | Pending verification | — |
-| Configure shared folder | Pending verification | — |
-| Create a clean VM snapshot | Pending verification | — |
+WHOIS retrieves domain registration information, including registrar details, registration dates, domain status, and nameservers.
 
-## 3. Tools and Technologies
-
-| Tool | Description |
-|---|---|
-| 7-Zip | Used to extract the Kali Linux archive |
-| VirtualBox 7.2.22 | Virtual machine management |
-| Kali Linux 2026.3 | Linux-based cybersecurity environment |
-| Windows PowerShell | Network configuration and commands |
-| VBoxManage | VirtualBox command-line utility |
-| NetworkManager | Linux network configuration |
-| Firefox | Internet connectivity testing |
-
-## 4. Preparing the Kali Linux Virtual Machine
-
-I started by downloading the Kali Linux VirtualBox image and installing 7-Zip to extract the compressed archive.
-
-After extraction, the folder contained the virtual machine configuration file (`.vbox`) and virtual disk file (`.vdi`).
-
-The configuration file contains the VM settings, while the virtual disk stores the operating system and its data.
-
-**Screenshot 01 – Extracted Kali Linux Files**
-
-<img width="782" height="77" alt="vm1main" src="https://github.com/user-attachments/assets/578d5360-5446-44e7-8094-2f6430858df4" />
-
-**Screenshot 02 – Kali Linux Virtual Machine Files**
-
-<img width="906" height="146" alt="vm1" src="https://github.com/user-attachments/assets/839d877a-9ded-4b92-854d-81a5c42ea2e7" />
-
-## 5. VirtualBox Installation and VM Import
-
-After preparing the Kali Linux files, I installed Oracle VirtualBox version 7.2.22.
-
-I imported the virtual machine into VirtualBox using the extracted `.vbox` configuration file.
-
-The VM was configured with the following resources:
-
-- Base Memory: 2048 MB
-- Processors: 2
-- Virtual Disk: Approximately 80 GB
-- Operating System Type: Debian (64-bit)
-
-**Screenshot 03 – Virtual Machine Configuration**
-
-<img width="882" height="155" alt="vm5" src="https://github.com/user-attachments/assets/0a80b1d2-bc24-42ee-a575-5c837cfe387a" />
-
-## 6. Creating the NAT Network
-
-The next step was configuring a dedicated network for the cybersecurity lab.
-
-I accessed the network management section through:
-
-`VirtualBox → File → Tools → Network`
-
-The NAT Network was configured with these settings:
-
-| Network Parameter | Value |
-|---|---|
-| Network Name | NATNetwork |
-| IPv4 Address Range | 10.0.0.0/24 |
-| DHCP Server | Enabled |
-| IPv6 | Disabled |
-
-A NAT Network allows multiple virtual machines to communicate through a shared virtual subnet while providing external network connectivity.
-
-**Screenshot 04 – VirtualBox Network Manager**
-
-<img width="1917" height="1020" alt="vm2" src="https://github.com/user-attachments/assets/db39254c-b9aa-41b6-9555-746574f0d6d7" />
-
-**Screenshot 05 – NAT Network Configuration**
-
-<img width="1917" height="1012" alt="vm3" src="https://github.com/user-attachments/assets/f579a00c-89ba-4638-bf62-8a6aa7673136" />
-
-## 7. Configuring the Kali Linux Network Adapter
-
-Once the NAT Network was created, I opened the Kali virtual machine settings and navigated to:
-
-`Settings → Network → Adapter 1`
-
-The adapter was configured using the following options:
-
-| Setting | Configuration |
-|---|---|
-| Network Adapter | Enabled |
-| Attached To | NAT Network |
-| Network Name | NATNetwork |
-| Adapter Type | Intel PRO/1000 MT Desktop |
-| Promiscuous Mode | Allow All |
-| Cable Connected | Enabled |
-
-This connected the Kali Linux virtual machine to the previously created virtual network.
-
-**Screenshot 06 – Kali Linux Network Adapter Settings**
-
-<img width="1917" height="865" alt="vm4" src="https://github.com/user-attachments/assets/74c415ea-8309-4d78-a70d-beb608c91f2c" />
-
-## 8. Checking Network Configuration in Kali Linux
-
-After connecting the adapter, I started Kali Linux and inspected its wired network connection.
-
-I used the following command to open the network connection editor:
+**Command:**
 
 ```bash
-nm-connection-editor
+whois networkwalks.com
 ```
 
-The connection editor displayed the wired network interface as `eth0`.
+**Observations:**
 
-This helped me inspect the network configuration inside the Linux environment.
+- Registrar listed: GoDaddy.com, LLC
+- Creation date: 6 November 2019
+- Registry expiry date: 6 November 2027
+- Nameservers: `NS6135.HOSTGATOR.COM` and `NS6136.HOSTGATOR.COM`
+- DNSSEC status: unsigned
+- The output included client-level domain status restrictions.
+- The response returned registration details, followed by a rate-limit notice.
 
-**Screenshot 07 – Kali Linux Network Connection Editor**
+**Security Relevance:** Domain registration data provides context about domain registration and DNS infrastructure during reconnaissance.
 
-<img width="1917" height="827" alt="vm6" src="https://github.com/user-attachments/assets/d8f75f91-59e9-4d19-a842-3618a0d08219" />
+**Evidence – WHOIS Result**
 
-## 9. Testing Internet Connectivity
+![WHOIS lookup result for networkwalks.com](screenshots2/image-1.png)
 
-To verify that the network configuration was working, I opened Firefox inside Kali Linux and accessed Google.
+## 2. WhatWeb – Website Technology Identification
 
-The website loaded successfully, confirming that the virtual machine had internet access.
+WhatWeb identifies technologies and software signatures that are publicly detectable on a website.
 
-I also explored basic network connectivity and DNS resolution as part of the setup process.
+**Command:**
 
-**Screenshot 09 – Internet Connectivity Test**
+```bash
+whatweb https://networkwalks.com
+```
 
-<img width="1917" height="950" alt="vm8" src="https://github.com/user-attachments/assets/f93eea38-2fd5-4dce-9072-cafd762a7b5b" />
+**Observations:**
 
-## 10. Challenges and Troubleshooting
+- The website responded with HTTP status `200 OK`.
+- The web server was identified as Apache.
+- WhatWeb detected Bootstrap version `7.1.4` and jQuery version `3.7.1`.
+- WordPress was identified as the website's content management system.
+- WordPress Download Manager version `3.3.76` was detected.
+- The website title was identified as `NetworkWalks Academy`.
+- The detected country was the United States.
 
-During the setup process, several configuration-related issues were encountered.
+**Security Relevance:** Technology identification helps document the publicly visible web stack and provide context for a security assessment.
 
-| No. | Issue | Resolution |
-|---|---|---|
-| 1 | Virtual machine showed an Inaccessible status. | Removed the broken VM entry and imported it again from the extracted folder. |
-| 2 | VirtualBox installation stopped unexpectedly. | Restarted the system and ran the installer again. |
-| 3 | Network configuration option was difficult to locate. | Used the VirtualBox network management tools and VBoxManage. |
-| 4 | PowerShell did not recognize VBoxManage. | Executed the utility from the VirtualBox installation directory. |
-| 5 | VM settings could not be modified because the machine was locked. | Shut down the running virtual machine before making changes. |
-| 6 | An incorrectly configured virtual network caused removal errors. | Updated the VM adapter configuration before removing the old network. |
-| 7 | Wired network settings were difficult to locate in Kali Linux. | Opened NetworkManager using the terminal. |
-| 8 | High RAM usage affected VM performance. | Closed unnecessary applications before launching the virtual machine. |
+**Evidence – WhatWeb Result**
 
-## 11. Important Concepts Learned
+![WhatWeb technology detection result](screenshots2/image-2.png)
 
-Through this project, I developed a better understanding of the following concepts:
+## 3. Nslookup – DNS Lookup
 
-**1. Virtualization**
+Nslookup queries DNS to retrieve information such as the IP address associated with a domain.
 
-Virtualization allows multiple operating systems to run on a single physical computer.
+**Command:**
 
-**2. NAT vs NAT Network**
+```bash
+nslookup networkwalks.com
+```
 
-NAT provides network access to an individual virtual machine, whereas NAT Network allows multiple VMs to communicate through a shared network.
+**Observations:**
 
-**3. IP Addressing**
+- The DNS query was performed using Google DNS (`8.8.8.8`).
+- The response was marked as a non-authoritative answer.
+- The domain `networkwalks.com` resolved to IPv4 address `192.232.216.135`.
 
-IP addresses help identify devices and enable communication across networks.
+**Security Relevance:** DNS lookup provides a basic view of domain resolution and the DNS infrastructure responding to the query.
 
-**4. Network Configuration**
+**Evidence – Nslookup Result**
 
-Virtual network adapters connect virtual machines to different network environments.
+![Nslookup result showing resolved IP address](screenshots2/image-3.png)
 
-**5. Virtual Machine Snapshots**
+## 4. cURL – HTTP Response Header Inspection
 
-Snapshots help preserve VM states and make recovery easier during experiments.
+cURL requests HTTP response headers to review server responses and publicly returned header information.
 
-**6. Troubleshooting**
+**Command:**
 
-Understanding error messages and checking configurations helps identify technical problems.
+```bash
+curl -I https://networkwalks.com
+```
 
-## 12. Conclusion
+**Observations:**
 
-Completing this project provided me with practical exposure to setting up a cybersecurity lab environment.
+- The server returned HTTP status `200 OK`.
+- The server was identified as Apache.
+- The response included `Content-Type: text/html; charset=UTF-8`.
+- The `X-Nginx-cache` header indicated `WordPress`.
+- The response included a `Permissions-Policy` header.
+- A `Set-Cookie` header was present with the `HttpOnly` and `Secure` attributes.
 
-I gained hands-on experience with Kali Linux, VirtualBox, virtual networking, and basic connectivity testing.
+**Security Relevance:** Response-header inspection documents visible web-server behaviour and configuration information.
 
-This setup serves as the foundation for the next stages of my cybersecurity internship, where I look forward to learning more about reconnaissance, network scanning, and vulnerability assessment.
+**Evidence – cURL Result**
+
+![cURL HTTP response headers](screenshots2/image-4.png)
+
+## 5. Wafw00f – Web Application Firewall Detection
+
+Wafw00f checks whether a website appears to be protected by a Web Application Firewall (WAF).
+
+**Command:**
+
+```bash
+wafw00f https://networkwalks.com
+```
+
+**Observations:**
+
+- Wafw00f detected a Web Application Firewall protecting `https://networkwalks.com`.
+- The identified WAF was `ModSecurity (SpiderLabs)`.
+- The detection process completed after sending 2 requests.
+
+**Security Relevance:** WAF detection may indicate web application protection mechanisms exposed to external requests. Detection alone does not provide a complete security assessment.
+
+**Evidence – Wafw00f Result**
+
+![Wafw00f WAF detection result](screenshots2/image-5.png)
+
+## 6. DNSenum – DNS Enumeration
+
+DNSenum gathers DNS-related information for a domain, such as records and nameserver details.
+
+**Command:**
+
+```bash
+dnsenum networkwalks.com
+```
+
+**Observations:**
+
+- The domain resolved to IPv4 address `192.232.216.135`.
+- The nameservers identified were `ns6135.hostgator.com` and `ns6136.hostgator.com`.
+- The nameserver IP addresses were identified as `50.87.144.87` and `192.232.216.131`.
+- The domain's DNS IP block was identified as `192.232.216.0/24`.
+- Reverse lookup returned 0 results out of 256 IP addresses.
+- DNSenum identified subdomains including `autodiscover.networkwalks.com`, `ftp.networkwalks.com`, `mail.networkwalks.com`, and `webmail.networkwalks.com`.
+- Zone transfer attempts against both nameservers were refused.
+
+**Security Relevance:** DNS enumeration helps map publicly exposed domain infrastructure and understand DNS records associated with a target.
+
+**Evidence – DNSenum Result**
+
+![DNSenum output, part 1](screenshots2/image-6.png)
+
+![DNSenum output, part 2](screenshots2/image-7.png)
 
 ---
 
-## Project Information
+# Practical 2 – Network Scanning with Zenmap (W2-PM5)
+
+## Objective
+
+To use Zenmap, the graphical interface for Nmap, for authorised network discovery and scan-result review.
+
+## Scan Environment
+
+| Parameter | Details |
+|---|---|
+| Target | `10.0.0.0/24` |
+| Scan Profile | Ping scan |
+| Nmap Version | 7.99 |
+
+## Procedure and Observations
+
+The Zenmap graphical interface was used to perform host discovery on the authorised VirtualBox NAT Network.
+
+The target network was configured as `10.0.0.0/24`, and the Ping Scan profile was selected. The scan was initiated to identify active hosts within the network.
+
+**Observations:**
+
+- The scan covered 256 IP addresses.
+- Two hosts were identified as active.
+- Host `10.0.0.1` was identified as the network gateway.
+- Host `10.0.0.2` was identified as the Kali Linux VM.
+- The scan completed in approximately 7 seconds.
+
+**Evidence – Zenmap Scan**
+
+![Zenmap ping scan results for 10.0.0.0/24](screenshots2/image-8.png)
+
+**Evidence – Zenmap Network Topology**
+
+![Zenmap network topology view](screenshots2/image-9.png)
+
+## Findings
+
+- Two active hosts were discovered within the scanned subnet.
+- The identified hosts were `10.0.0.1` and `10.0.0.2`.
+- The network topology graphic displayed the localhost node and the two discovered hosts.
+- No port or service enumeration was performed as part of this Ping Scan.
+
+The results provide a basic overview of the active devices in the authorised lab network.
+
+---
+
+# Summary of Findings
+
+| Tool / Practical | Purpose | Result |
+|---|---|---|
+| WHOIS | Domain registration lookup | Registration details retrieved |
+| WhatWeb | Website technology identification | Apache, WordPress, Bootstrap, and jQuery detected |
+| Nslookup | DNS lookup | Domain resolved to `192.232.216.135` |
+| cURL | HTTP response headers | HTTP `200 OK`; Apache server and response headers inspected |
+| Wafw00f | WAF detection | ModSecurity (SpiderLabs) detected |
+| DNSenum | DNS enumeration | DNS records, nameservers, IP block, and subdomains identified |
+| Zenmap | Authorised network discovery | Two active hosts discovered in `10.0.0.0/24` |
+
+# Key Learning Outcomes
+
+- Practised domain reconnaissance with multiple Kali Linux tools.
+- Reviewed domain registration and nameserver information.
+- Explored website technology, DNS, HTTP headers, and WAF detection.
+- Applied network scanning concepts through Zenmap within an authorised scope.
+- Documented practical methodology and evidence.
+
+# Conclusion
+
+Week 02 provided practical exposure to reconnaissance and network discovery. The exercises used publicly available domain information and authorised lab scanning to build familiarity with Kali Linux tools and their outputs.
+
+---
+
+# Project Details
 
 | Field | Details |
 |---|---|
-| Project | Cybersecurity Lab Environment Setup |
-| Organization | NETWORKWALKS |
-| Internship | Week 1 |
-| Project Code | WK1-PM1 |
-| Author | Abhishek Sajeev Nair |
-| Virtualization Software | Oracle VirtualBox 7.2.22 |
-| Operating System | Kali Linux 2026.3 |
-| Archive Utility | 7-Zip |
-
-**GitHub Repository:** Add your repository URL here.
-
-**Internship:** NETWORKWALKS Cybersecurity Internship
+| Internship | NETWORKWALKS Cybersecurity Internship |
+| Week | 02 |
+| Elective | W2-PM1 – Footprinting with Multiple Kali Tools |
+| Essential | W2-PM5 – Zenmap-Based Network Scanning |
+| Target Domain | `networkwalks.com` |
+| Author | Abhishek Nair |
